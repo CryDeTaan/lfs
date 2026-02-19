@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>About Us - {{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
     <nav>
@@ -11,6 +11,6 @@
         <a href="{{ route('about') }}">About Us</a>
         <a href="{{ route('contact') }}">Contact Us</a>
     </nav>
-    <h1>Hello World</h1>
+    <h1>About Us</h1>
 </body>
 </html>
