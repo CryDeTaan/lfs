@@ -21,4 +21,10 @@ Route::post('/ideas', function (Request $request) {
     return redirect()->back();
 })->name('ideas.store');
 
+Route::delete('/ideas', function (Request $request) {
+    $request->session()->forget('ideas');
+
+    return redirect()->back();
+})->name('ideas.clear');
+
 require __DIR__.'/old.php';

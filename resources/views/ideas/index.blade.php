@@ -2,12 +2,23 @@
     <div class="mx-auto max-w-2xl px-4 py-12">
         <div class="mb-6 flex items-center justify-between">
             <h1 class="text-3xl font-bold text-white">Ideas</h1>
-            <a
-                href="{{ route('old.home') }}"
-                class="rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/25"
-            >
-                Old Pages
-            </a>
+            <div class="flex items-center gap-2">
+                @if (count($ideas))
+                    <form method="POST" action="{{ route('ideas.clear') }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="rounded-full bg-red-500/20 px-4 py-2 text-sm font-medium text-red-300 ring-1 ring-red-400/30 transition hover:bg-red-500/30">
+                            Clear All
+                        </button>
+                    </form>
+                @endif
+                <a
+                    href="{{ route('old.home') }}"
+                    class="rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/25"
+                >
+                    Old Pages
+                </a>
+            </div>
         </div>
 
         <form method="POST" action="{{ route('ideas.store') }}" class="mb-8 rounded-2xl bg-white/10 p-6 ring-1 ring-white/20 backdrop-blur-lg">
