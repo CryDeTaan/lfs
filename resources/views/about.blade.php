@@ -1,3 +1,3 @@
-<x-layout title="About Us">
+<x-old-layout title="About Us">
     <h1>About Us</h1>
-</x-layout>
+</x-old-layout>

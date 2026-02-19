@@ -1,4 +1,4 @@
-<x-layout title="Tasks">
+<x-old-layout title="Tasks">
     <h1>Tasks</h1>
 
     @forelse ($tasks as $task)
@@ -6,4 +6,4 @@
     @empty
         <p>There are no tasks.</p>
     @endforelse
-</x-layout>
+</x-old-layout>

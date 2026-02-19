@@ -1,53 +1,53 @@
 <?php
 
 test('the home page returns a successful response', function () {
-    $this->get('/')->assertSuccessful();
+    $this->get('/old/')->assertSuccessful();
 });
 
 test('the home page displays default greeting', function () {
-    $this->get('/')
+    $this->get('/old/')
         ->assertSuccessful()
         ->assertSeeText('Hello, World');
 });
 
 test('the home page displays greeting with custom name', function () {
-    $this->get('/?name=John')
+    $this->get('/old/?name=John')
         ->assertSuccessful()
         ->assertSeeText('Hello, John');
 });
 
 test('the about page returns a successful response', function () {
-    $this->get('/about')->assertSuccessful();
+    $this->get('/old/about')->assertSuccessful();
 });
 
 test('the about page displays the correct heading', function () {
-    $this->get('/about')
+    $this->get('/old/about')
         ->assertSuccessful()
         ->assertSeeText('About Us');
 });
 
 test('the contact page returns a successful response', function () {
-    $this->get('/contact')->assertSuccessful();
+    $this->get('/old/contact')->assertSuccessful();
 });
 
 test('the contact page displays the correct heading', function () {
-    $this->get('/contact')
+    $this->get('/old/contact')
         ->assertSuccessful()
         ->assertSeeText('Contact Us');
 });
 
 test('the tasks page returns a successful response', function () {
-    $this->get('/tasks')->assertSuccessful();
+    $this->get('/old/tasks')->assertSuccessful();
 });
 
 test('the tasks page displays the correct heading', function () {
-    $this->get('/tasks')
+    $this->get('/old/tasks')
         ->assertSuccessful()
         ->assertSeeText('Tasks');
 });
 
 test('the tasks page displays tasks', function () {
-    $this->get('/tasks')
+    $this->get('/old/tasks')
         ->assertSuccessful()
         ->assertSeeText('Buy groceries')
         ->assertSeeText('Walk the dog')

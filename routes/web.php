@@ -4,20 +4,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function (Request $request) {
-    $name = $request->query('name', 'World');
+    $ideas = $request->session()->get('ideas', []);
 
-    return view('welcome', ['greeting' => "Hello, {$name}"]);
-})->name('home');
-Route::view('/about', 'about')->name('about');
-Route::view('/contact', 'contact')->name('contact');
-Route::get('/tasks', function () {
-    $tasks = [
-        'Buy groceries',
-        'Walk the dog',
-        'Finish Laravel project',
-        'Read a book',
-        'Go to the gym',
-    ];
+    return view('ideas.index', ['ideas' => $ideas]);
+})->name('ideas.index');
 
-    return view('tasks', ['tasks' => $tasks]);
-})->name('tasks');
+Route::post('/ideas', function (Request $request) {
+    $validated = $request->validate([
+        'idea' => ['required', 'string', 'max:255'],
+    ]);
+
+    $ideas = $request->session()->get('ideas', []);
+    $ideas[] = $validated['idea'];
+    $request->session()->put('ideas', $ideas);
+
+    return redirect()->back();
+})->name('ideas.store');
+
+require __DIR__.'/old.php';

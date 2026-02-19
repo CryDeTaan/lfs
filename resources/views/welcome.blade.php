@@ -1,3 +1,3 @@
-<x-layout>
+<x-old-layout>
     <h1>{{ $greeting }}</h1>
-</x-layout>
+</x-old-layout>
