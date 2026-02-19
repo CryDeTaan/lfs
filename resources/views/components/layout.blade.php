@@ -8,16 +8,9 @@
         <title>
             {{ $title ? $title.' - ' : '' }}{{ config('app.name', 'Laravel') }}
         </title>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body>
-        <nav
-            class="navbar navbar-expand-lg navbar-light bg-light mb-5 flex flex-col justify-between pt-3 sm:flex-row"
-        >
-            <a href="{{ route('home') }}">Home</a>
-            <a href="{{ route('about') }}">About Us</a>
-            <a href="{{ route('contact') }}">Contact Us</a>
-            <a href="{{ route('tasks') }}">Tasks</a>
-        </nav>
+    <body class="min-h-screen bg-gradient-to-br from-violet-600 via-purple-500 to-indigo-600 text-white antialiased">
         {{ $slot }}
     </body>
 </html>
