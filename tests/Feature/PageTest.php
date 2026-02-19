@@ -35,3 +35,21 @@ test('the contact page displays the correct heading', function () {
         ->assertSuccessful()
         ->assertSeeText('Contact Us');
 });
+
+test('the tasks page returns a successful response', function () {
+    $this->get('/tasks')->assertSuccessful();
+});
+
+test('the tasks page displays the correct heading', function () {
+    $this->get('/tasks')
+        ->assertSuccessful()
+        ->assertSeeText('Tasks');
+});
+
+test('the tasks page displays tasks', function () {
+    $this->get('/tasks')
+        ->assertSuccessful()
+        ->assertSeeText('Buy groceries')
+        ->assertSeeText('Walk the dog')
+        ->assertSeeText('Finish Laravel project');
+});
