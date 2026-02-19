@@ -10,3 +10,14 @@ Route::get('/', function (Request $request) {
 })->name('home');
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
+Route::get('/tasks', function () {
+    $tasks = [
+        'Buy groceries',
+        'Walk the dog',
+        'Finish Laravel project',
+        'Read a book',
+        'Go to the gym',
+    ];
+
+    return view('tasks', ['tasks' => $tasks]);
+})->name('tasks');
