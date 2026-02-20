@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\IdeaState;
 use App\Models\Idea;
 
 test('the ideas page returns a successful response', function () {
@@ -55,4 +56,58 @@ test('a user can clear all ideas', function () {
         ->assertRedirect();
 
     $this->assertDatabaseCount('ideas', 0);
+});
+
+test('a new idea has pending state by default', function () {
+    $this->post('/ideas', ['idea' => 'A fresh idea']);
+
+    $this->assertDatabaseHas('ideas', [
+        'description' => 'A fresh idea',
+        'state' => 'pending',
+    ]);
+});
+
+test('filtering by pending state shows only pending ideas', function () {
+    Idea::factory()->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
+    Idea::factory()->complete()->create(['description' => 'Complete idea']);
+
+    $this->get('/?state=pending')
+        ->assertSeeText('Pending idea')
+        ->assertDontSeeText('Complete idea');
+});
+
+test('filtering by complete state shows only complete ideas', function () {
+    Idea::factory()->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
+    Idea::factory()->complete()->create(['description' => 'Complete idea']);
+
+    $this->get('/?state=complete')
+        ->assertSeeText('Complete idea')
+        ->assertDontSeeText('Pending idea');
+});
+
+test('no filter shows all ideas', function () {
+    Idea::factory()->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
+    Idea::factory()->complete()->create(['description' => 'Complete idea']);
+
+    $this->get('/')
+        ->assertSeeText('Pending idea')
+        ->assertSeeText('Complete idea');
+});
+
+test('a user can toggle an idea state from pending to complete', function () {
+    $idea = Idea::factory()->create();
+
+    $this->patch("/ideas/{$idea->id}/state")
+        ->assertRedirect();
+
+    expect($idea->fresh()->state)->toBe(IdeaState::Complete);
+});
+
+test('a user can toggle an idea state from complete to pending', function () {
+    $idea = Idea::factory()->complete()->create();
+
+    $this->patch("/ideas/{$idea->id}/state")
+        ->assertRedirect();
+
+    expect($idea->fresh()->state)->toBe(IdeaState::Pending);
 });

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\IdeaState;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,12 @@ class IdeaFactory extends Factory
     {
         return [
             'description' => fake()->sentence(),
+            'state' => IdeaState::Pending,
         ];
+    }
+
+    public function complete(): static
+    {
+        return $this->state(['state' => IdeaState::Complete]);
     }
 }

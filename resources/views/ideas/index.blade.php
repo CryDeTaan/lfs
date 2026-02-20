@@ -25,6 +25,39 @@
             </div>
         </div>
 
+        <div class="mb-6 flex gap-2">
+            <a
+                href="{{ route('ideas.index') }}"
+                @class([
+                    'rounded-full px-4 py-1.5 text-sm font-medium transition',
+                    'bg-amber-400 text-gray-900' => ! $currentState,
+                    'bg-white/10 text-white hover:bg-white/20' => $currentState,
+                ])
+            >
+                All
+            </a>
+            <a
+                href="{{ route('ideas.index', ['state' => 'pending']) }}"
+                @class([
+                    'rounded-full px-4 py-1.5 text-sm font-medium transition',
+                    'bg-amber-400 text-gray-900' => $currentState === 'pending',
+                    'bg-white/10 text-white hover:bg-white/20' => $currentState !== 'pending',
+                ])
+            >
+                Pending
+            </a>
+            <a
+                href="{{ route('ideas.index', ['state' => 'complete']) }}"
+                @class([
+                    'rounded-full px-4 py-1.5 text-sm font-medium transition',
+                    'bg-amber-400 text-gray-900' => $currentState === 'complete',
+                    'bg-white/10 text-white hover:bg-white/20' => $currentState !== 'complete',
+                ])
+            >
+                Complete
+            </a>
+        </div>
+
         <form
             method="POST"
             action="{{ route('ideas.store') }}"
@@ -55,9 +88,34 @@
             <ul class="space-y-3">
                 @foreach ($ideas as $idea)
                     <li
-                        class="rounded-xl border-l-4 border-amber-400 bg-white/10 px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
+                        @class([
+                            'flex items-center justify-between rounded-xl border-l-4 bg-white/10 px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15',
+                            'border-amber-400' => $idea->state === \App\Enums\IdeaState::Pending,
+                            'border-green-400' => $idea->state === \App\Enums\IdeaState::Complete,
+                        ])
                     >
-                        {{ $idea->description }}
+                        <span
+                            @class(['line-through opacity-60' => $idea->state === \App\Enums\IdeaState::Complete])
+                        >
+                            {{ $idea->description }}
+                        </span>
+                        <form
+                            method="POST"
+                            action="{{ route('ideas.state', $idea) }}"
+                        >
+                            @csrf
+                            @method('PATCH')
+                            <button
+                                type="submit"
+                                @class([
+                                    'shrink-0 rounded-full px-3 py-1 text-xs font-medium transition',
+                                    'bg-green-500/20 text-green-300 ring-1 ring-green-400/30 hover:bg-green-500/30' => $idea->state === \App\Enums\IdeaState::Pending,
+                                    'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30 hover:bg-amber-500/30' => $idea->state === \App\Enums\IdeaState::Complete,
+                                ])
+                            >
+                                {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Complete' : 'Reopen' }}
+                            </button>
+                        </form>
                     </li>
                 @endforeach
             </ul>

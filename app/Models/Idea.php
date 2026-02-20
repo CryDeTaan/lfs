@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\IdeaState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,5 +12,13 @@ class Idea extends Model
     use HasFactory;
 
     /** @var list<string> */
-    protected $fillable = ['description'];
+    protected $fillable = ['description', 'state'];
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'state' => IdeaState::class,
+        ];
+    }
 }
