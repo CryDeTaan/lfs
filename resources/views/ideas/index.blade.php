@@ -57,7 +57,7 @@
                     <li
                         class="rounded-xl border-l-4 border-amber-400 bg-white/10 px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
                     >
-                        {{ $idea }}
+                        {{ $idea->description }}
                     </li>
                 @endforeach
             </ul>
