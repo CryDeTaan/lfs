@@ -7,11 +7,15 @@
                     <form method="POST" action="{{ route('ideas.clear') }}">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="rounded-full bg-red-500/20 px-4 py-2 text-sm font-medium text-red-300 ring-1 ring-red-400/30 transition hover:bg-red-500/30">
+                        <button
+                            type="submit"
+                            class="rounded-full bg-red-500/20 px-4 py-2 text-sm font-medium text-red-300 ring-1 ring-red-400/30 transition hover:bg-red-500/30"
+                        >
                             Clear All
                         </button>
                     </form>
                 @endif
+
                 <a
                     href="{{ route('old.home') }}"
                     class="rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/25"
@@ -21,7 +25,11 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('ideas.store') }}" class="mb-8 rounded-2xl bg-white/10 p-6 ring-1 ring-white/20 backdrop-blur-lg">
+        <form
+            method="POST"
+            action="{{ route('ideas.store') }}"
+            class="mb-8 rounded-2xl bg-white/10 p-6 ring-1 ring-white/20 backdrop-blur-lg"
+        >
             @csrf
             <div class="flex gap-3">
                 <input
@@ -29,7 +37,7 @@
                     name="idea"
                     placeholder="What's your idea?"
                     value="{{ old('idea') }}"
-                    class="grow rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/50 transition focus:bg-white/30 focus:outline-none focus:ring-1 focus:ring-white/40"
+                    class="grow rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/50 transition focus:bg-white/30 focus:ring-1 focus:ring-white/40 focus:outline-none"
                 />
                 <button
                     type="submit"
@@ -43,20 +51,22 @@
             @enderror
         </form>
 
-        @forelse ($ideas as $idea)
-            @if ($loop->first)
-                <ul class="space-y-3">
-            @endif
-
-            <li class="rounded-xl border-l-4 border-amber-400 bg-white/10 px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15">{{ $idea }}</li>
-
-            @if ($loop->last)
-                </ul>
-            @endif
-        @empty
-            <div class="rounded-xl border-2 border-dashed border-white/20 bg-white/5 px-4 py-8 text-center text-white/60">
+        @if (count($ideas))
+            <ul class="space-y-3">
+                @foreach ($ideas as $idea)
+                    <li
+                        class="rounded-xl border-l-4 border-amber-400 bg-white/10 px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
+                    >
+                        {{ $idea }}
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <div
+                class="rounded-xl border-2 border-dashed border-white/20 bg-white/5 px-4 py-8 text-center text-white/60"
+            >
                 No ideas yet. Add one above!
             </div>
-        @endforelse
+        @endif
     </div>
 </x-layout>

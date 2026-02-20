@@ -10,7 +10,9 @@
         </title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-gradient-to-br from-violet-600 via-purple-500 to-indigo-600 text-white antialiased">
+    <body
+        class="min-h-screen bg-gradient-to-br from-violet-600 via-purple-500 to-indigo-600 text-white antialiased"
+    >
         {{ $slot }}
     </body>
 </html>
