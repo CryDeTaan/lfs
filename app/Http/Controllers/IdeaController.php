@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\IdeaState;
+use App\Http\Requests\StoreIdeaRequest;
+use App\Http\Requests\UpdateIdeaRequest;
 use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class IdeaController extends Controller
@@ -32,13 +33,12 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreIdeaRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'idea' => ['required', 'string', 'max:255'],
-        ]);
 
-        Idea::query()->create(['description' => $validated['idea']]);
+        Idea::query()->create([
+            'description' => $request['description'],
+        ]);
 
         return redirect()->back();
     }
@@ -62,14 +62,12 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Idea $idea): RedirectResponse
+    public function update(UpdateIdeaRequest $request, Idea $idea): RedirectResponse
     {
-        $validated = $request->validate([
-            'description' => ['sometimes', 'required', 'string', 'max:255'],
-            'state' => ['sometimes', 'required', Rule::enum(IdeaState::class)],
+        $idea->update([
+            'description' => $request['description'],
+            'state' => $request['state'],
         ]);
-
-        $idea->update($validated);
 
         return redirect()->back();
     }

@@ -16,7 +16,7 @@ test('the ideas page shows the form', function () {
 });
 
 test('a user can store an idea', function () {
-    $this->post('/ideas', ['idea' => 'My great idea'])
+    $this->post('/ideas', ['description' => 'My great idea'])
         ->assertRedirect();
 
     $this->assertDatabaseHas('ideas', ['description' => 'My great idea']);
@@ -26,13 +26,13 @@ test('a user can store an idea', function () {
 });
 
 test('storing an idea requires the idea field', function () {
-    $this->post('/ideas', ['idea' => ''])
-        ->assertSessionHasErrors('idea');
+    $this->post('/ideas', ['description' => ''])
+        ->assertSessionHasErrors('description');
 });
 
 test('storing an idea enforces max length', function () {
-    $this->post('/ideas', ['idea' => str_repeat('a', 256)])
-        ->assertSessionHasErrors('idea');
+    $this->post('/ideas', ['description' => str_repeat('a', 256)])
+        ->assertSessionHasErrors('description');
 });
 
 test('the ideas page displays ideas from the database', function () {
@@ -67,7 +67,7 @@ test('the idea show page has a delete button', function () {
 });
 
 test('a new idea has pending state by default', function () {
-    $this->post('/ideas', ['idea' => 'A fresh idea']);
+    $this->post('/ideas', ['description' => 'A fresh idea']);
 
     $this->assertDatabaseHas('ideas', [
         'description' => 'A fresh idea',

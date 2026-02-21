@@ -54,14 +54,14 @@
             <div class="flex gap-3">
                 <input
                     type="text"
-                    name="idea"
+                    name="description"
                     placeholder="What's your idea?"
-                    value="{{ old('idea') }}"
+                    value="{{ old('description') }}"
                     class="grow rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/50 transition focus:bg-white/30 focus:ring-1 focus:ring-white/40 focus:outline-none"
                 />
                 <x-button type="submit" variant="primary">Save</x-button>
             </div>
-            @error('idea')
+            @error('description')
                 <p class="mt-2 text-sm text-red-300">{{ $message }}</p>
             @enderror
         </form>
