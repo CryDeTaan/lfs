@@ -1,66 +1,12 @@
 <?php
 
-use App\Enums\IdeaState;
-use App\Models\Idea;
-use Illuminate\Http\Request;
+use App\Http\Controllers\IdeaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function (Request $request) {
-    $query = Idea::query()->latest();
+Route::get('/', [IdeaController::class, 'index'])->name('ideas.index');
 
-    $state = $request->query('state');
+Route::resource('ideas', IdeaController::class)->except(['index', 'create']);
 
-    if ($state && IdeaState::tryFrom($state)) {
-        $query->where('state', $state);
-    }
-
-    $ideas = $query->get();
-
-    return view('ideas.index', ['ideas' => $ideas, 'currentState' => $state]);
-})->name('ideas.index');
-
-Route::get('/ideas/{idea}', function (Idea $idea) {
-    return view('ideas.show', ['idea' => $idea]);
-})->name('ideas.show');
-
-Route::post('/ideas', function (Request $request) {
-    $validated = $request->validate([
-        'idea' => ['required', 'string', 'max:255'],
-    ]);
-
-    Idea::query()->create(['description' => $validated['idea']]);
-
-    return redirect()->back();
-})->name('ideas.store');
-
-Route::get('/ideas/{idea}/edit', function (Idea $idea) {
-    return view('ideas.edit', ['idea' => $idea]);
-})->name('ideas.edit');
-
-Route::patch('/ideas/{idea}', function (Request $request, Idea $idea) {
-    $validated = $request->validate([
-        'description' => ['required', 'string', 'max:255'],
-    ]);
-
-    $idea->update($validated);
-
-    return redirect()->route('ideas.show', $idea);
-})->name('ideas.update');
-
-Route::patch('/ideas/{idea}/state', function (Idea $idea) {
-    $idea->update([
-        'state' => $idea->state === IdeaState::Pending
-            ? IdeaState::Complete
-            : IdeaState::Pending,
-    ]);
-
-    return redirect()->back();
-})->name('ideas.state');
-
-Route::delete('/ideas/{idea}', function (Idea $idea) {
-    $idea->delete();
-
-    return redirect()->route('ideas.index');
-})->name('ideas.destroy');
+Route::patch('/ideas/{idea}/state', [IdeaController::class, 'state'])->name('ideas.state');
 
 require __DIR__.'/old.php';
