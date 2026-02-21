@@ -140,3 +140,42 @@ test('a user can toggle an idea state from complete to pending', function () {
 
     expect($idea->fresh()->state)->toBe(IdeaState::Pending);
 });
+
+test('the idea show page has an edit button', function () {
+    $idea = Idea::factory()->create(['description' => 'My editable idea']);
+
+    $this->get("/ideas/{$idea->id}")
+        ->assertSuccessful()
+        ->assertSee(route('ideas.edit', $idea));
+});
+
+test('a user can view the edit page for an idea', function () {
+    $idea = Idea::factory()->create(['description' => 'Original description']);
+
+    $this->get("/ideas/{$idea->id}/edit")
+        ->assertSuccessful()
+        ->assertSee('Original description');
+});
+
+test('a user can update an idea description', function () {
+    $idea = Idea::factory()->create(['description' => 'Old description']);
+
+    $this->patch("/ideas/{$idea->id}", ['description' => 'Updated description'])
+        ->assertRedirect(route('ideas.show', $idea));
+
+    expect($idea->fresh()->description)->toBe('Updated description');
+});
+
+test('updating an idea requires the description field', function () {
+    $idea = Idea::factory()->create();
+
+    $this->patch("/ideas/{$idea->id}", ['description' => ''])
+        ->assertSessionHasErrors('description');
+});
+
+test('updating an idea enforces max length', function () {
+    $idea = Idea::factory()->create();
+
+    $this->patch("/ideas/{$idea->id}", ['description' => str_repeat('a', 256)])
+        ->assertSessionHasErrors('description');
+});

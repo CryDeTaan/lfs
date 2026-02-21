@@ -27,20 +27,32 @@
                     {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Pending' : 'Complete' }}
                 </span>
 
-                <form method="POST" action="{{ route('ideas.state', $idea) }}">
-                    @csrf
-                    @method('PATCH')
-                    <button
-                        type="submit"
-                        @class([
-                            'rounded-full px-4 py-1.5 text-sm font-medium transition',
-                            'bg-green-500/20 text-green-300 ring-1 ring-green-400/30 hover:bg-green-500/30' => $idea->state === \App\Enums\IdeaState::Pending,
-                            'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30 hover:bg-amber-500/30' => $idea->state === \App\Enums\IdeaState::Complete,
-                        ])
+                <div class="flex items-center gap-2">
+                    <a
+                        href="{{ route('ideas.edit', $idea) }}"
+                        class="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/70 ring-1 ring-white/20 transition hover:bg-white/20 hover:text-white"
                     >
-                        {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Mark Complete' : 'Reopen' }}
-                    </button>
-                </form>
+                        Edit
+                    </a>
+
+                    <form
+                        method="POST"
+                        action="{{ route('ideas.state', $idea) }}"
+                    >
+                        @csrf
+                        @method('PATCH')
+                        <button
+                            type="submit"
+                            @class([
+                                'rounded-full px-4 py-1.5 text-sm font-medium transition',
+                                'bg-green-500/20 text-green-300 ring-1 ring-green-400/30 hover:bg-green-500/30' => $idea->state === \App\Enums\IdeaState::Pending,
+                                'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30 hover:bg-amber-500/30' => $idea->state === \App\Enums\IdeaState::Complete,
+                            ])
+                        >
+                            {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Mark Complete' : 'Reopen' }}
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <p
