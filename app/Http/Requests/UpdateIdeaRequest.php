@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\IdeaState;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateIdeaRequest extends FormRequest
 {
@@ -25,8 +23,7 @@ class UpdateIdeaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => ['sometimes', 'required', 'string', 'max:255'],
-            'state' => ['sometimes', 'required', Rule::enum(IdeaState::class)],
+            'description' => ['required', 'string', 'max:255'],
         ];
     }
 }

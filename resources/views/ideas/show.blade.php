@@ -25,15 +25,10 @@
 
                 <form
                     method="POST"
-                    action="{{ route('ideas.update', $idea) }}"
+                    action="{{ route('ideas.toggle-state', $idea) }}"
                 >
                     @csrf
                     @method('PATCH')
-                    <input
-                        type="hidden"
-                        name="state"
-                        value="{{ $idea->state === \App\Enums\IdeaState::Pending ? 'complete' : 'pending' }}"
-                    />
                     <x-badge
                         type="submit"
                         :color="$idea->state === \App\Enums\IdeaState::Pending ? 'green' : 'amber'"

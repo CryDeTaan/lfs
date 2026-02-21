@@ -64,7 +64,7 @@ class IdeaController extends Controller
     {
         $idea->update($request->validated());
 
-        return redirect()->back();
+        return redirect()->route('ideas.show', $idea);
     }
 
     /**
