@@ -181,6 +181,18 @@ test('updating an idea requires the description field', function () {
         ->assertSessionHasErrors('description');
 });
 
+test('the edit page mirrors the show page layout', function () {
+    $idea = Idea::factory()->create(['description' => 'Layout test idea']);
+
+    $this->get("/ideas/{$idea->id}/edit")
+        ->assertSuccessful()
+        ->assertSeeText('Pending')
+        ->assertSeeText('Created')
+        ->assertSee(route('ideas.show', $idea))
+        ->assertSeeText('Cancel')
+        ->assertSeeText('Save');
+});
+
 test('updating an idea enforces max length', function () {
     $idea = Idea::factory()->create();
 
