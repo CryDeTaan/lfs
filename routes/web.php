@@ -33,6 +33,20 @@ Route::post('/ideas', function (Request $request) {
     return redirect()->back();
 })->name('ideas.store');
 
+Route::get('/ideas/{idea}/edit', function (Idea $idea) {
+    return view('ideas.edit', ['idea' => $idea]);
+})->name('ideas.edit');
+
+Route::patch('/ideas/{idea}', function (Request $request, Idea $idea) {
+    $validated = $request->validate([
+        'description' => ['required', 'string', 'max:255'],
+    ]);
+
+    $idea->update($validated);
+
+    return redirect()->route('ideas.show', $idea);
+})->name('ideas.update');
+
 Route::patch('/ideas/{idea}/state', function (Idea $idea) {
     $idea->update([
         'state' => $idea->state === IdeaState::Pending
