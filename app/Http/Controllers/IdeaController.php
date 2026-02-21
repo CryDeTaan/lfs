@@ -6,6 +6,7 @@ use App\Enums\IdeaState;
 use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class IdeaController extends Controller
@@ -64,12 +65,13 @@ class IdeaController extends Controller
     public function update(Request $request, Idea $idea): RedirectResponse
     {
         $validated = $request->validate([
-            'description' => ['required', 'string', 'max:255'],
+            'description' => ['sometimes', 'required', 'string', 'max:255'],
+            'state' => ['sometimes', 'required', Rule::enum(IdeaState::class)],
         ]);
 
         $idea->update($validated);
 
-        return redirect()->route('ideas.show', $idea);
+        return redirect()->back();
     }
 
     /**
@@ -80,19 +82,5 @@ class IdeaController extends Controller
         $idea->delete();
 
         return redirect()->route('ideas.index');
-    }
-
-    /**
-     * Toggle the state of the specified resource.
-     */
-    public function state(Idea $idea): RedirectResponse
-    {
-        $idea->update([
-            'state' => $idea->state === IdeaState::Pending
-                ? IdeaState::Complete
-                : IdeaState::Pending,
-        ]);
-
-        return redirect()->back();
     }
 }

@@ -23,9 +23,17 @@
                     {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Pending' : 'Complete' }}
                 </x-badge>
 
-                <form method="POST" action="{{ route('ideas.state', $idea) }}">
+                <form
+                    method="POST"
+                    action="{{ route('ideas.update', $idea) }}"
+                >
                     @csrf
                     @method('PATCH')
+                    <input
+                        type="hidden"
+                        name="state"
+                        value="{{ $idea->state === \App\Enums\IdeaState::Pending ? 'complete' : 'pending' }}"
+                    />
                     <x-badge
                         type="submit"
                         :color="$idea->state === \App\Enums\IdeaState::Pending ? 'green' : 'amber'"

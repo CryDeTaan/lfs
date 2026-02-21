@@ -102,10 +102,10 @@ test('no filter shows all ideas', function () {
         ->assertSeeText('Complete idea');
 });
 
-test('a user can toggle an idea state from pending to complete', function () {
+test('a user can update an idea state from pending to complete', function () {
     $idea = Idea::factory()->create();
 
-    $this->patch("/ideas/{$idea->id}/state")
+    $this->patch("/ideas/{$idea->id}", ['state' => 'complete'])
         ->assertRedirect();
 
     expect($idea->fresh()->state)->toBe(IdeaState::Complete);
@@ -140,10 +140,10 @@ test('viewing a nonexistent idea returns 404', function () {
         ->assertNotFound();
 });
 
-test('a user can toggle an idea state from complete to pending', function () {
+test('a user can update an idea state from complete to pending', function () {
     $idea = Idea::factory()->complete()->create();
 
-    $this->patch("/ideas/{$idea->id}/state")
+    $this->patch("/ideas/{$idea->id}", ['state' => 'pending'])
         ->assertRedirect();
 
     expect($idea->fresh()->state)->toBe(IdeaState::Pending);
@@ -169,16 +169,36 @@ test('a user can update an idea description', function () {
     $idea = Idea::factory()->create(['description' => 'Old description']);
 
     $this->patch("/ideas/{$idea->id}", ['description' => 'Updated description'])
-        ->assertRedirect(route('ideas.show', $idea));
+        ->assertRedirect();
 
     expect($idea->fresh()->description)->toBe('Updated description');
 });
 
-test('updating an idea requires the description field', function () {
+test('updating an idea requires description to be non-empty when provided', function () {
     $idea = Idea::factory()->create();
 
     $this->patch("/ideas/{$idea->id}", ['description' => ''])
         ->assertSessionHasErrors('description');
+});
+
+test('a user can update both description and state at once', function () {
+    $idea = Idea::factory()->create(['description' => 'Old description']);
+
+    $this->patch("/ideas/{$idea->id}", [
+        'description' => 'New description',
+        'state' => 'complete',
+    ])->assertRedirect();
+
+    $idea->refresh();
+    expect($idea->description)->toBe('New description');
+    expect($idea->state)->toBe(IdeaState::Complete);
+});
+
+test('updating an idea state rejects invalid state values', function () {
+    $idea = Idea::factory()->create();
+
+    $this->patch("/ideas/{$idea->id}", ['state' => 'invalid'])
+        ->assertSessionHasErrors('state');
 });
 
 test('the edit page mirrors the show page layout', function () {
