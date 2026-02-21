@@ -49,13 +49,21 @@ test('the ideas page shows empty state when no ideas exist', function () {
         ->assertSeeText('No ideas yet');
 });
 
-test('a user can clear all ideas', function () {
-    Idea::factory()->count(3)->create();
+test('a user can delete an idea from the show page', function () {
+    $idea = Idea::factory()->create(['description' => 'Delete me']);
 
-    $this->delete('/ideas')
-        ->assertRedirect();
+    $this->delete("/ideas/{$idea->id}")
+        ->assertRedirect(route('ideas.index'));
 
-    $this->assertDatabaseCount('ideas', 0);
+    $this->assertDatabaseMissing('ideas', ['id' => $idea->id]);
+});
+
+test('the idea show page has a delete button', function () {
+    $idea = Idea::factory()->create();
+
+    $this->get("/ideas/{$idea->id}")
+        ->assertSuccessful()
+        ->assertSee(route('ideas.destroy', $idea));
 });
 
 test('a new idea has pending state by default', function () {

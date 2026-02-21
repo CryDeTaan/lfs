@@ -52,6 +52,20 @@
                             {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Mark Complete' : 'Reopen' }}
                         </button>
                     </form>
+
+                    <form
+                        method="POST"
+                        action="{{ route('ideas.destroy', $idea) }}"
+                    >
+                        @csrf
+                        @method('DELETE')
+                        <button
+                            type="submit"
+                            class="rounded-full bg-red-500/20 px-4 py-1.5 text-sm font-medium text-red-300 ring-1 ring-red-400/30 transition hover:bg-red-500/30"
+                        >
+                            Delete
+                        </button>
+                    </form>
                 </div>
             </div>
 

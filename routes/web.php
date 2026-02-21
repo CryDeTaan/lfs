@@ -57,10 +57,10 @@ Route::patch('/ideas/{idea}/state', function (Idea $idea) {
     return redirect()->back();
 })->name('ideas.state');
 
-Route::delete('/ideas', function () {
-    Idea::query()->truncate();
+Route::delete('/ideas/{idea}', function (Idea $idea) {
+    $idea->delete();
 
-    return redirect()->back();
-})->name('ideas.clear');
+    return redirect()->route('ideas.index');
+})->name('ideas.destroy');
 
 require __DIR__.'/old.php';
