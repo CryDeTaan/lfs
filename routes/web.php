@@ -19,6 +19,10 @@ Route::get('/', function (Request $request) {
     return view('ideas.index', ['ideas' => $ideas, 'currentState' => $state]);
 })->name('ideas.index');
 
+Route::get('/ideas/{idea}', function (Idea $idea) {
+    return view('ideas.show', ['idea' => $idea]);
+})->name('ideas.show');
+
 Route::post('/ideas', function (Request $request) {
     $validated = $request->validate([
         'idea' => ['required', 'string', 'max:255'],

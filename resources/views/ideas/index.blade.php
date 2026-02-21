@@ -94,11 +94,15 @@
                             'border-green-400' => $idea->state === \App\Enums\IdeaState::Complete,
                         ])
                     >
-                        <span
-                            @class(['line-through opacity-60' => $idea->state === \App\Enums\IdeaState::Complete])
+                        <a
+                            href="{{ route('ideas.show', $idea) }}"
+                            @class([
+                                'transition hover:text-amber-300',
+                                'line-through opacity-60' => $idea->state === \App\Enums\IdeaState::Complete,
+                            ])
                         >
                             {{ $idea->description }}
-                        </span>
+                        </a>
                         <form
                             method="POST"
                             action="{{ route('ideas.state', $idea) }}"

@@ -103,6 +103,35 @@ test('a user can toggle an idea state from pending to complete', function () {
     expect($idea->fresh()->state)->toBe(IdeaState::Complete);
 });
 
+test('the ideas index links to individual idea pages', function () {
+    $idea = Idea::factory()->create(['description' => 'Linked idea']);
+
+    $this->get('/')
+        ->assertSuccessful()
+        ->assertSee(route('ideas.show', $idea));
+});
+
+test('a user can view an individual idea', function () {
+    $idea = Idea::factory()->create(['description' => 'My brilliant idea']);
+
+    $this->get("/ideas/{$idea->id}")
+        ->assertSuccessful()
+        ->assertSeeText('My brilliant idea');
+});
+
+test('viewing an idea shows its state', function () {
+    $idea = Idea::factory()->complete()->create(['description' => 'Done idea']);
+
+    $this->get("/ideas/{$idea->id}")
+        ->assertSuccessful()
+        ->assertSeeText('Complete');
+});
+
+test('viewing a nonexistent idea returns 404', function () {
+    $this->get('/ideas/999')
+        ->assertNotFound();
+});
+
 test('a user can toggle an idea state from complete to pending', function () {
     $idea = Idea::factory()->complete()->create();
 
