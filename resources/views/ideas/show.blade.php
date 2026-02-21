@@ -16,7 +16,7 @@
                 'border-green-400' => $idea->state === \App\Enums\IdeaState::Complete,
             ])
         >
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
                 <x-badge
                     :color="$idea->state === \App\Enums\IdeaState::Pending ? 'amber' : 'green'"
                 >
@@ -44,26 +44,32 @@
                 {{ $idea->description }}
             </p>
 
-            <p class="mt-3 text-sm text-white/40">
-                Created {{ $idea->created_at->diffForHumans() }}
-            </p>
-
             <div
-                class="mt-5 flex items-center gap-2 border-t border-white/10 pt-5"
+                class="flex items-start justify-between border-t border-white/10 pt-2"
             >
-                <x-button :href="route('ideas.edit', $idea)" variant="primary">
-                    Edit
-                </x-button>
+                <p class="text-sm leading-none text-white/40">
+                    Created {{ $idea->created_at->diffForHumans() }}
+                </p>
 
-                <form
-                    method="POST"
-                    action="{{ route('ideas.destroy', $idea) }}"
-                    class="ml-auto"
-                >
-                    @csrf
-                    @method('DELETE')
-                    <x-button type="submit" variant="danger">Delete</x-button>
-                </form>
+                <div class="flex gap-2">
+                    <form
+                        method="POST"
+                        action="{{ route('ideas.destroy', $idea) }}"
+                    >
+                        @csrf
+                        @method('DELETE')
+                        <x-button type="submit" variant="danger">
+                            Delete
+                        </x-button>
+                    </form>
+
+                    <x-button
+                        :href="route('ideas.edit', $idea)"
+                        variant="primary"
+                    >
+                        Edit
+                    </x-button>
+                </div>
             </div>
         </div>
     </div>
