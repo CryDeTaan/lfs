@@ -59,12 +59,7 @@
                     value="{{ old('idea') }}"
                     class="grow rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/50 transition focus:bg-white/30 focus:ring-1 focus:ring-white/40 focus:outline-none"
                 />
-                <button
-                    type="submit"
-                    class="rounded-lg bg-amber-400 px-6 py-2 font-medium text-gray-900 transition hover:bg-amber-300"
-                >
-                    Save
-                </button>
+                <x-button type="submit" variant="primary">Save</x-button>
             </div>
             @error('idea')
                 <p class="mt-2 text-sm text-red-300">{{ $message }}</p>
@@ -96,16 +91,13 @@
                         >
                             @csrf
                             @method('PATCH')
-                            <button
+                            <x-badge
                                 type="submit"
-                                @class([
-                                    'shrink-0 rounded-full px-3 py-1 text-xs font-medium transition',
-                                    'bg-green-500/20 text-green-300 ring-1 ring-green-400/30 hover:bg-green-500/30' => $idea->state === \App\Enums\IdeaState::Pending,
-                                    'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30 hover:bg-amber-500/30' => $idea->state === \App\Enums\IdeaState::Complete,
-                                ])
+                                class="shrink-0"
+                                :color="$idea->state === \App\Enums\IdeaState::Pending ? 'green' : 'amber'"
                             >
                                 {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Complete' : 'Reopen' }}
-                            </button>
+                            </x-badge>
                         </form>
                     </li>
                 @endforeach

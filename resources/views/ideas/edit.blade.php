@@ -37,12 +37,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button
-                        type="submit"
-                        class="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-white transition hover:bg-white/30"
-                    >
-                        Save
-                    </button>
+                    <x-button type="submit" variant="primary">Save</x-button>
                     <a
                         href="{{ route('ideas.show', $idea) }}"
                         class="text-sm text-white/60 transition hover:text-white"

@@ -16,71 +16,55 @@
                 'border-green-400' => $idea->state === \App\Enums\IdeaState::Complete,
             ])
         >
-            <div class="mb-4 flex items-center justify-between">
-                <span
-                    @class([
-                        'rounded-full px-3 py-1 text-xs font-medium',
-                        'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30' => $idea->state === \App\Enums\IdeaState::Pending,
-                        'bg-green-500/20 text-green-300 ring-1 ring-green-400/30' => $idea->state === \App\Enums\IdeaState::Complete,
-                    ])
+            <div class="flex items-center justify-between">
+                <x-badge
+                    :color="$idea->state === \App\Enums\IdeaState::Pending ? 'amber' : 'green'"
                 >
                     {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Pending' : 'Complete' }}
-                </span>
+                </x-badge>
 
-                <div class="flex items-center gap-2">
-                    <a
-                        href="{{ route('ideas.edit', $idea) }}"
-                        class="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/70 ring-1 ring-white/20 transition hover:bg-white/20 hover:text-white"
+                <form method="POST" action="{{ route('ideas.state', $idea) }}">
+                    @csrf
+                    @method('PATCH')
+                    <x-badge
+                        type="submit"
+                        :color="$idea->state === \App\Enums\IdeaState::Pending ? 'green' : 'amber'"
                     >
-                        Edit
-                    </a>
-
-                    <form
-                        method="POST"
-                        action="{{ route('ideas.state', $idea) }}"
-                    >
-                        @csrf
-                        @method('PATCH')
-                        <button
-                            type="submit"
-                            @class([
-                                'rounded-full px-4 py-1.5 text-sm font-medium transition',
-                                'bg-green-500/20 text-green-300 ring-1 ring-green-400/30 hover:bg-green-500/30' => $idea->state === \App\Enums\IdeaState::Pending,
-                                'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30 hover:bg-amber-500/30' => $idea->state === \App\Enums\IdeaState::Complete,
-                            ])
-                        >
-                            {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Mark Complete' : 'Reopen' }}
-                        </button>
-                    </form>
-
-                    <form
-                        method="POST"
-                        action="{{ route('ideas.destroy', $idea) }}"
-                    >
-                        @csrf
-                        @method('DELETE')
-                        <button
-                            type="submit"
-                            class="rounded-full bg-red-500/20 px-4 py-1.5 text-sm font-medium text-red-300 ring-1 ring-red-400/30 transition hover:bg-red-500/30"
-                        >
-                            Delete
-                        </button>
-                    </form>
-                </div>
+                        {{ $idea->state === \App\Enums\IdeaState::Pending ? 'Mark Complete' : 'Reopen' }}
+                    </x-badge>
+                </form>
             </div>
 
             <p
                 @class([
-                    'text-lg text-white',
+                    'mt-4 text-lg text-white',
                     'line-through opacity-60' => $idea->state === \App\Enums\IdeaState::Complete,
                 ])
             >
                 {{ $idea->description }}
             </p>
 
-            <p class="mt-4 text-sm text-white/40">
+            <p class="mt-3 text-sm text-white/40">
                 Created {{ $idea->created_at->diffForHumans() }}
             </p>
+
+            <div
+                class="mt-5 flex items-center gap-2 border-t border-white/10 pt-5"
+            >
+                <x-button :href="route('ideas.edit', $idea)" variant="primary">
+                    Edit
+                </x-button>
+
+                <form
+                    method="POST"
+                    action="{{ route('ideas.destroy', $idea) }}"
+                    class="ml-auto"
+                >
+                    @csrf
+                    @method('DELETE')
+                    <x-button type="submit" variant="danger">Delete</x-button>
+                </form>
+            </div>
         </div>
     </div>
 </x-layout>
