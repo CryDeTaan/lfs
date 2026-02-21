@@ -36,9 +36,7 @@ class IdeaController extends Controller
     public function store(StoreIdeaRequest $request): RedirectResponse
     {
 
-        Idea::query()->create([
-            'description' => $request['description'],
-        ]);
+        Idea::query()->create($request->validated());
 
         return redirect()->back();
     }
@@ -64,10 +62,7 @@ class IdeaController extends Controller
      */
     public function update(UpdateIdeaRequest $request, Idea $idea): RedirectResponse
     {
-        $idea->update([
-            'description' => $request['description'],
-            'state' => $request['state'],
-        ]);
+        $idea->update($request->validated());
 
         return redirect()->back();
     }
