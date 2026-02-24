@@ -2,6 +2,12 @@
 
 use App\Enums\IdeaState;
 use App\Models\Idea;
+use App\Models\User;
+
+beforeEach(function () {
+    $this->user = User::factory()->create();
+    $this->actingAs($this->user);
+});
 
 test('the ideas page returns a successful response', function () {
     $this->get('/')
@@ -19,7 +25,10 @@ test('a user can store an idea', function () {
     $this->post('/ideas', ['description' => 'My great idea'])
         ->assertRedirect();
 
-    $this->assertDatabaseHas('ideas', ['description' => 'My great idea']);
+    $this->assertDatabaseHas('ideas', [
+        'description' => 'My great idea',
+        'user_id' => $this->user->id,
+    ]);
 
     $this->get('/')
         ->assertSeeText('My great idea');
@@ -36,8 +45,8 @@ test('storing an idea enforces max length', function () {
 });
 
 test('the ideas page displays ideas from the database', function () {
-    Idea::factory()->create(['description' => 'First idea']);
-    Idea::factory()->create(['description' => 'Second idea']);
+    Idea::factory()->for($this->user)->create(['description' => 'First idea']);
+    Idea::factory()->for($this->user)->create(['description' => 'Second idea']);
 
     $this->get('/')
         ->assertSeeText('First idea')
@@ -50,7 +59,7 @@ test('the ideas page shows empty state when no ideas exist', function () {
 });
 
 test('a user can delete an idea from the show page', function () {
-    $idea = Idea::factory()->create(['description' => 'Delete me']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'Delete me']);
 
     $this->delete("/ideas/{$idea->id}")
         ->assertRedirect(route('ideas.index'));
@@ -59,7 +68,7 @@ test('a user can delete an idea from the show page', function () {
 });
 
 test('the idea show page has a delete button', function () {
-    $idea = Idea::factory()->create();
+    $idea = Idea::factory()->for($this->user)->create();
 
     $this->get("/ideas/{$idea->id}")
         ->assertSuccessful()
@@ -76,8 +85,8 @@ test('a new idea has pending state by default', function () {
 });
 
 test('filtering by pending state shows only pending ideas', function () {
-    Idea::factory()->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
-    Idea::factory()->complete()->create(['description' => 'Complete idea']);
+    Idea::factory()->for($this->user)->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
+    Idea::factory()->for($this->user)->complete()->create(['description' => 'Complete idea']);
 
     $this->get('/?state=pending')
         ->assertSeeText('Pending idea')
@@ -85,8 +94,8 @@ test('filtering by pending state shows only pending ideas', function () {
 });
 
 test('filtering by complete state shows only complete ideas', function () {
-    Idea::factory()->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
-    Idea::factory()->complete()->create(['description' => 'Complete idea']);
+    Idea::factory()->for($this->user)->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
+    Idea::factory()->for($this->user)->complete()->create(['description' => 'Complete idea']);
 
     $this->get('/?state=complete')
         ->assertSeeText('Complete idea')
@@ -94,8 +103,8 @@ test('filtering by complete state shows only complete ideas', function () {
 });
 
 test('no filter shows all ideas', function () {
-    Idea::factory()->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
-    Idea::factory()->complete()->create(['description' => 'Complete idea']);
+    Idea::factory()->for($this->user)->create(['description' => 'Pending idea', 'state' => IdeaState::Pending]);
+    Idea::factory()->for($this->user)->complete()->create(['description' => 'Complete idea']);
 
     $this->get('/')
         ->assertSeeText('Pending idea')
@@ -103,7 +112,7 @@ test('no filter shows all ideas', function () {
 });
 
 test('a user can toggle an idea state from pending to complete', function () {
-    $idea = Idea::factory()->create();
+    $idea = Idea::factory()->for($this->user)->create();
 
     $this->patch("/ideas/{$idea->id}/toggle-state")
         ->assertRedirect();
@@ -112,7 +121,7 @@ test('a user can toggle an idea state from pending to complete', function () {
 });
 
 test('the ideas index links to individual idea pages', function () {
-    $idea = Idea::factory()->create(['description' => 'Linked idea']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'Linked idea']);
 
     $this->get('/')
         ->assertSuccessful()
@@ -120,7 +129,7 @@ test('the ideas index links to individual idea pages', function () {
 });
 
 test('a user can view an individual idea', function () {
-    $idea = Idea::factory()->create(['description' => 'My brilliant idea']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'My brilliant idea']);
 
     $this->get("/ideas/{$idea->id}")
         ->assertSuccessful()
@@ -128,7 +137,7 @@ test('a user can view an individual idea', function () {
 });
 
 test('viewing an idea shows its state', function () {
-    $idea = Idea::factory()->complete()->create(['description' => 'Done idea']);
+    $idea = Idea::factory()->for($this->user)->complete()->create(['description' => 'Done idea']);
 
     $this->get("/ideas/{$idea->id}")
         ->assertSuccessful()
@@ -141,7 +150,7 @@ test('viewing a nonexistent idea returns 404', function () {
 });
 
 test('a user can toggle an idea state from complete to pending', function () {
-    $idea = Idea::factory()->complete()->create();
+    $idea = Idea::factory()->for($this->user)->complete()->create();
 
     $this->patch("/ideas/{$idea->id}/toggle-state")
         ->assertRedirect();
@@ -150,7 +159,7 @@ test('a user can toggle an idea state from complete to pending', function () {
 });
 
 test('the idea show page has an edit button', function () {
-    $idea = Idea::factory()->create(['description' => 'My editable idea']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'My editable idea']);
 
     $this->get("/ideas/{$idea->id}")
         ->assertSuccessful()
@@ -158,7 +167,7 @@ test('the idea show page has an edit button', function () {
 });
 
 test('a user can view the edit page for an idea', function () {
-    $idea = Idea::factory()->create(['description' => 'Original description']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'Original description']);
 
     $this->get("/ideas/{$idea->id}/edit")
         ->assertSuccessful()
@@ -166,7 +175,7 @@ test('a user can view the edit page for an idea', function () {
 });
 
 test('a user can update an idea description', function () {
-    $idea = Idea::factory()->create(['description' => 'Old description']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'Old description']);
 
     $this->patch("/ideas/{$idea->id}", ['description' => 'Updated description'])
         ->assertRedirect(route('ideas.show', $idea));
@@ -175,14 +184,14 @@ test('a user can update an idea description', function () {
 });
 
 test('updating an idea requires description to be non-empty', function () {
-    $idea = Idea::factory()->create();
+    $idea = Idea::factory()->for($this->user)->create();
 
     $this->patch("/ideas/{$idea->id}", ['description' => ''])
         ->assertSessionHasErrors('description');
 });
 
 test('the edit page mirrors the show page layout', function () {
-    $idea = Idea::factory()->create(['description' => 'Layout test idea']);
+    $idea = Idea::factory()->for($this->user)->create(['description' => 'Layout test idea']);
 
     $this->get("/ideas/{$idea->id}/edit")
         ->assertSuccessful()
@@ -194,8 +203,41 @@ test('the edit page mirrors the show page layout', function () {
 });
 
 test('updating an idea enforces max length', function () {
-    $idea = Idea::factory()->create();
+    $idea = Idea::factory()->for($this->user)->create();
 
     $this->patch("/ideas/{$idea->id}", ['description' => str_repeat('a', 256)])
         ->assertSessionHasErrors('description');
+});
+
+test('a user cannot view another users idea', function () {
+    $otherUser = User::factory()->create();
+    $idea = Idea::factory()->for($otherUser)->create();
+
+    $this->get("/ideas/{$idea->id}")
+        ->assertForbidden();
+});
+
+test('a user cannot update another users idea', function () {
+    $otherUser = User::factory()->create();
+    $idea = Idea::factory()->for($otherUser)->create();
+
+    $this->patch("/ideas/{$idea->id}", ['description' => 'Hacked'])
+        ->assertForbidden();
+});
+
+test('a user cannot delete another users idea', function () {
+    $otherUser = User::factory()->create();
+    $idea = Idea::factory()->for($otherUser)->create();
+
+    $this->delete("/ideas/{$idea->id}")
+        ->assertForbidden();
+});
+
+test('a user only sees their own ideas on the index page', function () {
+    Idea::factory()->for($this->user)->create(['description' => 'My idea']);
+    Idea::factory()->create(['description' => 'Someone elses idea']);
+
+    $this->get('/')
+        ->assertSeeText('My idea')
+        ->assertDontSeeText('Someone elses idea');
 });

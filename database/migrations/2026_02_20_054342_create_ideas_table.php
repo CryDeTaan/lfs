@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('ideas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('description');
+            $table->string('state')->default('pending');
             $table->timestamps();
         });
     }

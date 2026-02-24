@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\IdeaState;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class IdeaFactory extends Factory
         return [
             'description' => fake()->sentence(),
             'state' => IdeaState::Pending,
+            'user_id' => User::factory(),
         ];
     }
 

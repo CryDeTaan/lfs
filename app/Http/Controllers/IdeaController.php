@@ -17,7 +17,7 @@ class IdeaController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Idea::query()->latest();
+        $query = $request->user()->ideas()->latest();
 
         $state = $request->query('state');
 
@@ -35,8 +35,7 @@ class IdeaController extends Controller
      */
     public function store(StoreIdeaRequest $request): RedirectResponse
     {
-
-        Idea::query()->create($request->validated());
+        $request->user()->ideas()->create($request->validated());
 
         return redirect()->back();
     }
@@ -44,16 +43,20 @@ class IdeaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Idea $idea): View
+    public function show(Request $request, Idea $idea): View
     {
+        abort_unless($idea->user_id === $request->user()->id, 403);
+
         return view('ideas.show', ['idea' => $idea]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Idea $idea): View
+    public function edit(Request $request, Idea $idea): View
     {
+        abort_unless($idea->user_id === $request->user()->id, 403);
+
         return view('ideas.edit', ['idea' => $idea]);
     }
 
@@ -62,6 +65,8 @@ class IdeaController extends Controller
      */
     public function update(UpdateIdeaRequest $request, Idea $idea): RedirectResponse
     {
+        abort_unless($idea->user_id === $request->user()->id, 403);
+
         $idea->update($request->validated());
 
         return redirect()->route('ideas.show', $idea);
@@ -70,8 +75,10 @@ class IdeaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Idea $idea): RedirectResponse
+    public function destroy(Request $request, Idea $idea): RedirectResponse
     {
+        abort_unless($idea->user_id === $request->user()->id, 403);
+
         $idea->delete();
 
         return redirect()->route('ideas.index');
