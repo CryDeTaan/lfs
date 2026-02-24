@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\ToggleIdeaStateController;
 use Illuminate\Support\Facades\Route;
