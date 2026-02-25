@@ -214,7 +214,7 @@ test('a user cannot view another users idea', function () {
     $idea = Idea::factory()->for($otherUser)->create();
 
     $this->get("/ideas/{$idea->id}")
-        ->assertForbidden();
+        ->assertNotFound();
 });
 
 test('a user cannot update another users idea', function () {
@@ -222,7 +222,7 @@ test('a user cannot update another users idea', function () {
     $idea = Idea::factory()->for($otherUser)->create();
 
     $this->patch("/ideas/{$idea->id}", ['description' => 'Hacked'])
-        ->assertForbidden();
+        ->assertNotFound();
 });
 
 test('a user cannot delete another users idea', function () {
@@ -230,7 +230,7 @@ test('a user cannot delete another users idea', function () {
     $idea = Idea::factory()->for($otherUser)->create();
 
     $this->delete("/ideas/{$idea->id}")
-        ->assertForbidden();
+        ->assertNotFound();
 });
 
 test('a user only sees their own ideas on the index page', function () {

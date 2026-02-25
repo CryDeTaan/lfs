@@ -6,6 +6,7 @@ use App\Enums\IdeaState;
 use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ToggleIdeaStateController extends Controller
 {
@@ -14,7 +15,7 @@ class ToggleIdeaStateController extends Controller
      */
     public function __invoke(Request $request, Idea $idea): RedirectResponse
     {
-        abort_unless($idea->user_id === $request->user()->id, 403);
+        Gate::authorize('update', $idea);
 
         $idea->update([
             'state' => $idea->state === IdeaState::Pending

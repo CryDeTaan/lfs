@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateIdeaRequest;
 use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class IdeaController extends Controller
@@ -45,7 +46,7 @@ class IdeaController extends Controller
      */
     public function show(Request $request, Idea $idea): View
     {
-        abort_unless($idea->user_id === $request->user()->id, 403);
+        Gate::authorize('view', $idea);
 
         return view('ideas.show', ['idea' => $idea]);
     }
@@ -55,7 +56,7 @@ class IdeaController extends Controller
      */
     public function edit(Request $request, Idea $idea): View
     {
-        abort_unless($idea->user_id === $request->user()->id, 403);
+        Gate::authorize('update', $idea);
 
         return view('ideas.edit', ['idea' => $idea]);
     }
@@ -65,7 +66,7 @@ class IdeaController extends Controller
      */
     public function update(UpdateIdeaRequest $request, Idea $idea): RedirectResponse
     {
-        abort_unless($idea->user_id === $request->user()->id, 403);
+        Gate::authorize('update', $idea);
 
         $idea->update($request->validated());
 
@@ -77,7 +78,7 @@ class IdeaController extends Controller
      */
     public function destroy(Request $request, Idea $idea): RedirectResponse
     {
-        abort_unless($idea->user_id === $request->user()->id, 403);
+        Gate::authorize('delete', $idea);
 
         $idea->delete();
 
