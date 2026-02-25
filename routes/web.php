@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ToggleIdeaStateController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [IdeaController::class, 'index'])->name('ideas.index');
     Route::resource('ideas', IdeaController::class)->except(['index', 'create']);
     Route::patch('ideas/{idea}/toggle-state', ToggleIdeaStateController::class)->name('ideas.toggle-state');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'update'])->name('notifications.read');
 });
 
 require __DIR__.'/old.php';

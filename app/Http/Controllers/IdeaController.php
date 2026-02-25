@@ -6,6 +6,7 @@ use App\Enums\IdeaState;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
 use App\Models\Idea;
+use App\Notifications\IdeaPublished;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -36,7 +37,9 @@ class IdeaController extends Controller
      */
     public function store(StoreIdeaRequest $request): RedirectResponse
     {
-        $request->user()->ideas()->create($request->validated());
+        $idea = $request->user()->ideas()->create($request->validated());
+
+        $request->user()->notify(new IdeaPublished($idea));
 
         return redirect()->back();
     }
